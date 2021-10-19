@@ -18,6 +18,7 @@
 
     <!-- Create Form -->
     <?php if(!isset($_GET['update'])): ?>
+        <h1>Create Post</h1>
         <form action="" method="post">
             <input type="text" name="post_title" placeholder="Post title...">
             <input type="text" name="post_description" placeholder="Post description...">
@@ -34,6 +35,7 @@
         ?>
 
         <?php while($row = mysqli_fetch_array($query)): ?>
+            <h1>Update Post</h1>
             <form action="" method="post">
                 <input type="text" name="post_id" value="<?php echo $row['post_id']; ?>" hidden>
                 <input type="text" name="post_title" placeholder="Enter your post title" value="<?php echo $row['post_title']; ?>">
@@ -186,12 +188,17 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        $query = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email' AND password = $password");
-        if($row = mysqli_fetch_array($query)):
-            $_SESSION["email"] = $row['email'];
-            header("Location: ./?success=Login successful");
+        if(empty($email) || empty($password)):
+            header("Location: ./?error=Input fields cannot be empty");
         else:
-            header("Location: ./?success=Login failed");
+            $query = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email' AND password = $password");
+
+            if($row = mysqli_fetch_array($query)):
+                $_SESSION["email"] = $row['email'];
+                header("Location: ./?success=Login successful");
+            else:
+                header("Location: ./?success=Login failed");
+            endif;
         endif;
         ?>
     <?php endif; ?>
